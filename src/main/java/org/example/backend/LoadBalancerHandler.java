@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.nio.charset.StandardCharsets;
 import org.example.core.LoadBalancer;
 
 public class LoadBalancerHandler implements Runnable {
@@ -27,8 +28,16 @@ public class LoadBalancerHandler implements Runnable {
       streamData(in);
       String msg = "Hello, this is backend server listening on port " + port;
 
-      String response = "HTTP/1.1 200 OK\r\n" + "Content-Type: text/plain\r\n" + "Content-Length: " + msg.length() + "\r\n" + msg;
-      out.write(response.getBytes());
+      byte[] body = msg.getBytes(StandardCharsets.UTF_8);
+
+      String headers =
+          "HTTP/1.1 200 OK\r\n" +
+              "Content-Type: text/plain\r\n" +
+              "Content-Length: " + body.length + "\r\n" +
+              "\r\n";
+
+      out.write(headers.getBytes(StandardCharsets.UTF_8));
+      out.write(body);
       out.flush();
     } catch (Exception e) {
       e.printStackTrace();
