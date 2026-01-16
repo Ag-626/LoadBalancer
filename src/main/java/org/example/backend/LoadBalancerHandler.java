@@ -51,7 +51,8 @@ public class LoadBalancerHandler implements Runnable {
   private void streamData(InputStream in) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader((in)));
     String line;
-    while(!(line = reader.readLine()).isEmpty()) {
+    while ((line = reader.readLine()) != null) {
+      if (line.isEmpty()) break;
       System.out.println("Request: " + line);
     }
 
